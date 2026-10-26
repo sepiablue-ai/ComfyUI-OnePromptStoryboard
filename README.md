@@ -52,6 +52,10 @@ ZIPを展開して `custom_nodes/ComfyUI-OnePromptStoryboard` に置く方法で
 
 H3モデルの配布元は [FastVideo/FastH3-Omni-Comfy](https://huggingface.co/FastVideo/FastH3-Omni-Comfy)。MOSS導入例は [moss-image-workflows](https://github.com/sepiablue-ai/moss-image-workflows)、H3・LBH・Real-ESRGANの導入はFastH3 repoの手順を参照してください。ダウンロード済みのファイル名やサブフォルダーに合わせ、ワークフローの選択欄を変更してください。独自の画風LoRAは同梱せず、付属例でも必須にしていません。
 
+MOSSモデル・Qwen・VAEは [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image/tree/main) で配布されています。蒸留LoRAは [lodestones/MOSS-Image-SFT-8-steps-dmd](https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd) の `lora.safetensors` です。付属例では `moss_image_sft_8step_dmd.safetensors` にリネームしています。元の名前を保つ場合はLoRA選択欄を変更してください。`lora_latest.safetensors` とは別ファイルです。
+
+LBHの現行配布名は [Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/tree/main/minimax_h3_latent_upscaler_3d_conv_v1) 内の `minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors` です。付属例の `minimax_h3_latent_upscaler_3d_fp16.safetensors` は同じ重みの別名です。どちらも配布元のSHA-256と実測ファイルの一致を確認しました。名前を変更せず、ノードの選択欄を合わせる方法でも使えます。
+
 ## 文章1つから一括生成
 
 `workflows/all_in_one_*.json` のいずれかをComfyUIへ読み込みます。`.api.json` はAPI送信用です。
