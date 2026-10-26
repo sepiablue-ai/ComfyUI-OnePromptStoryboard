@@ -40,21 +40,32 @@ ZIPを展開して `custom_nodes/ComfyUI-OnePromptStoryboard` に置く方法で
 | ファイル名 | ComfyUI内の配置先 |
 | --- | --- |
 | `moss_image_sft_int8_convrot.safetensors` | `models/diffusion_models` |
-| `moss_image_sft_8step_dmd.safetensors` | `models/loras` |
+| `lora.safetensors`（SFT用8step DMD） | `models/loras` |
 | `qwen3.5_9b_int8_convrot.safetensors` | `models/text_encoders` |
 | `flux2-vae.safetensors` | `models/vae` |
 | `fasth3_omniref_8step_pruned_int8_convrot.safetensors` | `models/diffusion_models` |
 | `qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | `models/text_encoders` |
 | `minimax_h3_video_vae_int8_convrot.safetensors` | `models/vae` |
 | `minimax_h3_audio_vae_fp32.safetensors` | `models/vae` |
-| `minimax_h3_latent_upscaler_3d_fp16.safetensors` | `models/latent_upscale_models` |
+| `minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors` | `models/latent_upscale_models` |
 | `realesr-animevideov3.pth` | `models/upscale_models` |
 
-H3モデルの配布元は [FastVideo/FastH3-Omni-Comfy](https://huggingface.co/FastVideo/FastH3-Omni-Comfy)。MOSS導入例は [moss-image-workflows](https://github.com/sepiablue-ai/moss-image-workflows)、H3・LBH・Real-ESRGANの導入はFastH3 repoの手順を参照してください。ダウンロード済みのファイル名やサブフォルダーに合わせ、ワークフローの選択欄を変更してください。独自の画風LoRAは同梱せず、付属例でも必須にしていません。
+H3モデルの配布元は [FastVideo/FastH3-Omni-Comfy](https://huggingface.co/FastVideo/FastH3-Omni-Comfy)。H3・LBH・Real-ESRGANの導入条件はFastH3 repoの手順も参照してください。ファイルは配布名のまま使用します。サブフォルダーへ置いた場合はワークフローの選択欄を合わせてください。独自の画風LoRAは同梱せず、付属例でも必須にしていません。
 
-MOSSモデル・Qwen・VAEは [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image/tree/main) で配布されています。蒸留LoRAは [lodestones/MOSS-Image-SFT-8-steps-dmd](https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd) の `lora.safetensors` です。付属例では `moss_image_sft_8step_dmd.safetensors` にリネームしています。元の名前を保つ場合はLoRA選択欄を変更してください。`lora_latest.safetensors` とは別ファイルです。
+MOSSのSFT INT8本体・Qwen・VAEは [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image/tree/main) で配布されています。蒸留LoRAは [lodestones/MOSS-Image-SFT-8-steps-dmd](https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd) の [`lora.safetensors`](https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/blob/main/lora.safetensors) を名前を変えずに使用します。`lora_latest.safetensors` は別の重みです。Base用DMD LoRAとも区別してください。
 
-LBHの現行配布名は [Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/tree/main/minimax_h3_latent_upscaler_3d_conv_v1) 内の `minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors` です。付属例の `minimax_h3_latent_upscaler_3d_fp16.safetensors` は同じ重みの別名です。どちらも配布元のSHA-256と実測ファイルの一致を確認しました。名前を変更せず、ノードの選択欄を合わせる方法でも使えます。
+LBHは [Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/tree/main/minimax_h3_latent_upscaler_3d_conv_v1) 内の `minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors` を名前を変えずに使用します。ワークフローも配布名に統一しました。
+
+### 配布物との一致確認と精度について
+
+2026-10-26に、検証環境の重みと配布元のLFS SHA-256を照合しました。
+
+| 配布ファイル | SHA-256 |
+| --- | --- |
+| SFT DMD `lora.safetensors` | `4abb14e39c1a59018907581e609f43616ec6810126144ec2b1d2e6f8969628fe` |
+| LBH `minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors` | `043e5a48e161610ef6c3ea974645220354d06fa618abca15f76d084812eb55c2` |
+
+lodestonesの現行モデルカードは、通常のComfyUI LoRAローダーで `lora.safetensors` を強度1で使う手順を示しています。一方、下部の「Deprecated」と明記された旧 `transformer/` 方式では、蒸留差分がBF16丸めより小さいためFP32での読み込み・実行が必要、と説明しています。この旧方式の要件を、現行LoRA利用時も本体のFP32化が必須という意味には扱っていません。本repoの例はINT8本体＋別適用LoRAで、配布元のFP32構成との品質比較は未実施です。精度や適用方法によって品質が変わる可能性はあります。
 
 ## 文章1つから一括生成
 

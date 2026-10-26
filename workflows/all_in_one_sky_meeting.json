@@ -108,12 +108,12 @@
         "Node name for S&R": "LoraLoaderModelOnly"
       },
       "widgets_values": [
-        "moss_image_sft_8step_dmd.safetensors",
+        "lora.safetensors",
         1.0
       ],
       "title": "MOSS 8step LoRA",
       "widgets_values_named": {
-        "lora_name": "moss_image_sft_8step_dmd.safetensors",
+        "lora_name": "lora.safetensors",
         "strength_model": 1.0
       }
     },
@@ -2266,12 +2266,12 @@
         "Node name for S&R": "FastH3AccelLBHHandoff"
       },
       "widgets_values": [
-        "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+        "minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors",
         512,
         896
       ],
       "widgets_values_named": {
-        "upscaler_name": "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+        "upscaler_name": "minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors",
         "width": 512,
         "height": 896
       }

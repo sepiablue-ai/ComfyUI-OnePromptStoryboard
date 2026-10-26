@@ -13,7 +13,7 @@
         "101",
         0
       ],
-      "lora_name": "moss_image_sft_8step_dmd.safetensors",
+      "lora_name": "lora.safetensors",
       "strength_model": 1.0
     }
   },
@@ -437,7 +437,7 @@
         "216",
         1
       ],
-      "upscaler_name": "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+      "upscaler_name": "minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors",
       "width": [
         "207",
         0
