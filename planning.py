@@ -5,6 +5,16 @@ SYSTEM_PROMPT = '''You are a film storyboard planner. Convert the user's Japanes
 {"title":"日本語の題名","summary":"English story summary","hero":"Main protagonist identity, age, hair, outfit","support":"Other recurring characters or important props; empty string if none","style":"Visual rendering and cinematography","shots":[{"scene":"Distinct location, time, lighting","keyframe":"Composition, initial pose, visible subjects and props","action":"Concrete movement and outcome for this shot","camera":"Simple coherent camera movement","sound":"Ambience and action sounds"},{"scene":"...","keyframe":"...","action":"...","camera":"...","sound":"..."},{"scene":"...","keyframe":"...","action":"...","camera":"...","sound":"..."},{"scene":"...","keyframe":"...","action":"...","camera":"...","sound":"..."}]}
 Exactly four shots. Do not insert example ellipses in the actual output.'''
 
+# Editable directing policy and a fixed output contract are kept separate.
+# Recombining the defaults preserves the original prompt for existing workflows.
+DEFAULT_SYSTEM_PROMPT, _contract = SYSTEM_PROMPT.split(' Output ONLY', 1)
+PLAN_OUTPUT_CONTRACT = 'Output ONLY' + _contract
+
+
+def build_system_prompt(system_prompt=None):
+    policy = DEFAULT_SYSTEM_PROMPT if system_prompt is None else system_prompt.strip()
+    return (policy + ' ' + PLAN_OUTPUT_CONTRACT).strip()
+
 def parse_plan(text):
     text=text.strip()
     if text.startswith('```'):

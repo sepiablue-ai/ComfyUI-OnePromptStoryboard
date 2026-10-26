@@ -1,5 +1,7 @@
 # ComfyUI-OnePromptStoryboard
 
+開発ブランチ `dev/gemma4-planner` では、ComfyUI対応Gemma4への台本用モデル切替と、システムプロンプトの編集欄を追加しています。[開発版の使い方と検証範囲](docs/GEMMA4_DEVELOPMENT.md)を参照してください。
+
 依頼文1つから4カットの共通台本を作り、MOSS用のストーリーボード指示とMiniMax H3 Ref2VA用の動画指示に変換するComfyUIカスタムノードです。
 
 **このrepoで導入するのは自作ノードだけです。モデル、MOSS／H3本体、外部カスタムノード、Pythonパッケージを自動インストールしません。** 非公式の補助ノードです。
