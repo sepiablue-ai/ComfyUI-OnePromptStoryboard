@@ -1,0 +1,476 @@
+{
+  "201": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "fasth3_omniref_8step_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "Load FastH3 OmniRef"
+    }
+  },
+  "202": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    },
+    "_meta": {
+      "title": "Load text encoder (nvfp4)"
+    }
+  },
+  "203": {
+    "class_type": "FastH3AccelPrefetch",
+    "inputs": {
+      "model": [
+        "201",
+        0
+      ],
+      "clip": [
+        "202",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Prefetch DiT weights"
+    }
+  },
+  "204": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader"
+    }
+  },
+  "205": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader"
+    }
+  },
+  "207": {
+    "class_type": "FastH3AccelSizes",
+    "inputs": {
+      "output_width": 1024,
+      "output_height": 1792,
+      "min_short_side": 512
+    },
+    "_meta": {
+      "title": "Output size"
+    }
+  },
+  "208": {
+    "class_type": "FastH3AccelTEBF16",
+    "inputs": {
+      "clip": [
+        "203",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "FastH3AccelTEBF16"
+    }
+  },
+  "209": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "208",
+        0
+      ],
+      "vae": [
+        "204",
+        0
+      ],
+      "audio_vae": [
+        "205",
+        0
+      ],
+      "prompt": [
+        "303",
+        0
+      ],
+      "width": [
+        "207",
+        0
+      ],
+      "height": [
+        "207",
+        1
+      ],
+      "length": 345,
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "206",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Reference to Video (prompt)"
+    }
+  },
+  "210": {
+    "class_type": "FastH3AccelChunkFFN",
+    "inputs": {
+      "model": [
+        "203",
+        0
+      ],
+      "chunks": 8,
+      "seq_threshold": 4096
+    },
+    "_meta": {
+      "title": "FastH3AccelChunkFFN"
+    }
+  },
+  "211": {
+    "class_type": "MiniMaxH3SigmaShift",
+    "inputs": {
+      "model": [
+        "210",
+        0
+      ],
+      "shift_video": 12.0,
+      "shift_audio": 3.0
+    },
+    "_meta": {
+      "title": "MiniMaxH3SigmaShift"
+    }
+  },
+  "212": {
+    "class_type": "ModelAttentionBackend",
+    "inputs": {
+      "model": [
+        "211",
+        0
+      ],
+      "attention": "comfy kitchen attention"
+    },
+    "_meta": {
+      "title": "ModelAttentionBackend"
+    }
+  },
+  "213": {
+    "class_type": "BlockSparseAttention",
+    "inputs": {
+      "model": [
+        "212",
+        0
+      ],
+      "selection": "vsa",
+      "selection.keep_percent": 10.0,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "dense_blocks": "",
+      "min_tokens": 12288,
+      "extra_tokens": 256,
+      "sink_conditioning": "exact_kv_and_rows",
+      "verbose": false
+    },
+    "_meta": {
+      "title": "BlockSparseAttention"
+    }
+  },
+  "214": {
+    "class_type": "FastH3AccelProducerReuse",
+    "inputs": {
+      "model": [
+        "213",
+        0
+      ],
+      "cache_mib": 1280
+    },
+    "_meta": {
+      "title": "FastH3AccelProducerReuse"
+    }
+  },
+  "215": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "214",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 8,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "BasicScheduler"
+    }
+  },
+  "216": {
+    "class_type": "SplitSigmas",
+    "inputs": {
+      "sigmas": [
+        "215",
+        0
+      ],
+      "step": 5
+    },
+    "_meta": {
+      "title": "SplitSigmas"
+    }
+  },
+  "217": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "214",
+        0
+      ],
+      "conditioning": [
+        "209",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "BasicGuider"
+    }
+  },
+  "218": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 771204598
+    },
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "219": {
+    "class_type": "DisableNoise",
+    "inputs": {},
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "220": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "221": {
+    "class_type": "EmptyMiniMaxH3LatentAV",
+    "inputs": {
+      "width": [
+        "207",
+        2
+      ],
+      "height": [
+        "207",
+        3
+      ],
+      "length": 345
+    },
+    "_meta": {
+      "title": "EmptyMiniMaxH3LatentAV"
+    }
+  },
+  "222": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "218",
+        0
+      ],
+      "guider": [
+        "217",
+        0
+      ],
+      "sampler": [
+        "220",
+        0
+      ],
+      "sigmas": [
+        "216",
+        0
+      ],
+      "latent_image": [
+        "221",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sampler low-res (5 steps)"
+    }
+  },
+  "223": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "222",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "LTXVSeparateAVLatent"
+    }
+  },
+  "224": {
+    "class_type": "FastH3AccelLBHHandoff",
+    "inputs": {
+      "samples": [
+        "222",
+        1
+      ],
+      "model": [
+        "214",
+        0
+      ],
+      "noise": [
+        "218",
+        0
+      ],
+      "sigmas": [
+        "216",
+        1
+      ],
+      "upscaler_name": "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+      "width": [
+        "207",
+        0
+      ],
+      "height": [
+        "207",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "LBH upscale + continue"
+    }
+  },
+  "225": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "224",
+        0
+      ],
+      "audio_latent": [
+        "223",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "LTXVConcatAVLatent"
+    }
+  },
+  "226": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "219",
+        0
+      ],
+      "guider": [
+        "217",
+        0
+      ],
+      "sampler": [
+        "220",
+        0
+      ],
+      "sigmas": [
+        "216",
+        1
+      ],
+      "latent_image": [
+        "225",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sampler high-res (3 steps)"
+    }
+  },
+  "227": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "226",
+        0
+      ],
+      "vae": [
+        "205",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "VAEDecodeAudio"
+    }
+  },
+  "228": {
+    "class_type": "UpscaleModelLoader",
+    "inputs": {
+      "model_name": "realesr-animevideov3.pth"
+    },
+    "_meta": {
+      "title": "UpscaleModelLoader"
+    }
+  },
+  "229": {
+    "class_type": "FastH3AccelStreamSave",
+    "inputs": {
+      "samples": [
+        "226",
+        0
+      ],
+      "vae": [
+        "204",
+        0
+      ],
+      "audio": [
+        "227",
+        0
+      ],
+      "upscale_model": [
+        "228",
+        0
+      ],
+      "scale_by": [
+        "207",
+        4
+      ],
+      "method": "bicubic",
+      "batch_frames": 4,
+      "filename_prefix": "storyboard_h3/reuse/video",
+      "fps": 24.0,
+      "nvenc_gpu": 0,
+      "cq": 18,
+      "tile_overlap": 32,
+      "crop_width": [
+        "207",
+        5
+      ],
+      "crop_height": [
+        "207",
+        6
+      ]
+    },
+    "_meta": {
+      "title": "Decode + ESRGAN + Save"
+    }
+  },
+  "206": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "storyboard.png"
+    }
+  },
+  "303": {
+    "class_type": "StoryboardPromptText",
+    "inputs": {
+      "text": "subject_definitions:\n<Picture 1> is the complete four-panel storyboard; its leftmost, second from the left, third from the left, rightmost panels map to [Shot 1] through [Shot 4], respectively.\n<Subject 1> is the main protagonist in <Picture 1>: Adult female university student, 20s, black hair in a high bun, wearing white and teal magical girl outfit with a star-tipped staff..\n<Subject 2> comprises the recurring cast and props in <Picture 1>: Empty string.\n\nsummary:\n[reference generation] A 14-second four-shot anime montage. An adult university student with black hair in a bun transforms into a magical girl. She fights an unseen enemy across four distinct dramatic scenes: a rooftop at night, mid-air combat, a ruined plaza, and finally dawn after the battle concludes. Use the single storyboard as the visual reference and follow the actions below.\n\nretention_analysis:\n<Picture 1> (all four shots): fully_preserved - retain each panel's scene, composition and order as successive full-screen shots; dividers are planning marks.\n<Subject 1> (all four shots): fully_preserved - retain identity, hair and the depicted clothing.\n<Subject 2> (where present in the panels): fully_preserved - retain the depicted appearances and roles.\n\ndetailed_description:\nHigh-contrast anime style, dynamic action lines, vibrant neon lighting for night scenes transitioning to soft pastel dawn colors.. Match the luminous rendering of <Picture 1>. Show exactly one full-frame scene at a time. No storyboard sheet, panel grid, repeated panels, borders, captions or writing. Hard cut to a distinctly different place/time/situation for every new shot, without morphing the locations together.\n[Shot 1] The scene follows the leftmost panel of <Picture 1>. Nighttime on a modern city rooftop, dark blue sky with distant city lights.. Medium shot of the protagonist standing center frame, back to camera, holding her glowing star staff upright, wind blowing her teal skirt.. Animate the action: She spins rapidly, staff trailing light, then thrusts it forward to unleash a beam that vanishes off-screen as if hitting an invisible foe.. Camera: Quick 360-degree orbit around the spinning character, ending on a low angle looking up at the impact point.. Synchronized sound: Whooshing wind, magical chime, sharp impact thud..\n[Shot 2] At 00:03.500, hard cut. The scene follows the second from the left panel of <Picture 1>. Mid-air amidst floating debris and shattered glass against a starry night sky.. Wide shot showing the protagonist falling backward through the air, arms outstretched, staff glowing brightly in her right hand.. Animate the action: She catches herself by planting the staff tip into a floating shard of glass, which expands into a shield, stopping her fall instantly.. Camera: Static wide shot, slight zoom in as she stabilizes.. Synchronized sound: Heavy thud of landing, crackling glass, magical hum..\n[Shot 3] At 00:07.000, hard cut. The scene follows the third from the left panel of <Picture 1>. A ruined public square at night, broken statues and cracked pavement under moonlight.. Low angle close-up of the protagonist's boots stepping onto cracked concrete, dust rising, her face determined and illuminated by the staff.. Animate the action: She stomps her foot, sending a shockwave of teal energy outward that shatters remaining rubble and silences the area.. Camera: Slow push-in towards her face as the shockwave expands.. Synchronized sound: Deep rumble, crumbling stone, sudden silence..\n[Shot 4] At 00:10.500, hard cut. The scene follows the rightmost panel of <Picture 1>. The same ruined plaza, now bathed in soft golden morning light, mist rising from the ground.. Full body shot of the protagonist kneeling on one knee, staff resting beside her, breathing heavily, hair slightly disheveled.. Animate the action: She slowly stands up, looks toward the horizon where the sun is peeking over buildings, and raises the staff gently before fading away.. Camera: Slow pull-back and upward tilt to reveal the sunrise.. Synchronized sound: Soft birds chirping, gentle breeze, faint magical fading sound..\n\noverall_soundscape:\nShot 1: Whooshing wind, magical chime, sharp impact thud.. Shot 2: Heavy thud of landing, crackling glass, magical hum.. Shot 3: Deep rumble, crumbling stone, sudden silence.. Shot 4: Soft birds chirping, gentle breeze, faint magical fading sound..\n\nnon_diegetic_music:\nN/A\n"
+    }
+  }
+}

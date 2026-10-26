@@ -1,0 +1,3361 @@
+{
+  "id": "9b856a9a-33be-4425-9511-d980922671ab",
+  "revision": 0,
+  "last_node_id": 305,
+  "last_link_id": 62,
+  "nodes": [
+    {
+      "id": 101,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        340,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "unet_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "unet_name"
+          }
+        },
+        {
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "weight_dtype"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "moss_image_sft_int8_convrot.safetensors",
+        "default"
+      ],
+      "title": "MOSSモデル",
+      "widgets_values_named": {
+        "unet_name": "moss_image_sft_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 102,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        180
+      ],
+      "size": [
+        340,
+        82
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "lora_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "lora_name"
+          }
+        },
+        {
+          "name": "strength_model",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "strength_model"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "moss_image_sft_8step_dmd.safetensors",
+        1.0
+      ],
+      "title": "MOSS 8step LoRA",
+      "widgets_values_named": {
+        "lora_name": "moss_image_sft_8step_dmd.safetensors",
+        "strength_model": 1.0
+      }
+    },
+    {
+      "id": 103,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        650
+      ],
+      "size": [
+        340,
+        106
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "clip_name"
+          }
+        },
+        {
+          "name": "type",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "type"
+          }
+        },
+        {
+          "name": "device",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "device"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            5,
+            59
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3.5_9b_int8_convrot.safetensors",
+        "moss_image",
+        "default"
+      ],
+      "title": "② 文章作成とMOSSで共有するQwen3.5",
+      "widgets_values_named": {
+        "clip_name": "qwen3.5_9b_int8_convrot.safetensors",
+        "type": "moss_image",
+        "device": "default"
+      }
+    },
+    {
+      "id": 104,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        850
+      ],
+      "size": [
+        340,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "vae_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "flux2-vae.safetensors"
+      ],
+      "title": "MOSS VAE",
+      "widgets_values_named": {
+        "vae_name": "flux2-vae.safetensors"
+      }
+    },
+    {
+      "id": 105,
+      "type": "MossStoryboardSampler",
+      "pos": [
+        950,
+        0
+      ],
+      "size": [
+        560,
+        1100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 4
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 5
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 6
+        },
+        {
+          "name": "positive",
+          "type": "STRING",
+          "link": 7,
+          "widget": {
+            "name": "positive"
+          }
+        },
+        {
+          "name": "negative",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "negative"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        },
+        {
+          "name": "spec",
+          "type": "STRING",
+          "link": 8
+        },
+        {
+          "name": "panels",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "panels"
+          }
+        },
+        {
+          "name": "panel_aspect",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "panel_aspect"
+          }
+        },
+        {
+          "name": "panel_edge",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "panel_edge"
+          }
+        },
+        {
+          "name": "canvas_aspect",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "canvas_aspect"
+          }
+        },
+        {
+          "name": "gutter",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "gutter"
+          }
+        },
+        {
+          "name": "margin",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "margin"
+          }
+        },
+        {
+          "name": "init",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "init"
+          }
+        },
+        {
+          "name": "label",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "label"
+          }
+        },
+        {
+          "name": "reborder",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "reborder"
+          }
+        },
+        {
+          "name": "border_px",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "border_px"
+          }
+        },
+        {
+          "name": "shave",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "shave"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "grid",
+          "type": "IMAGE",
+          "links": [
+            9,
+            19
+          ]
+        },
+        {
+          "name": "panels",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": []
+        },
+        {
+          "name": "spec",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "prompt_used",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "report",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MossStoryboardSampler"
+      },
+      "widgets_values": [
+        "",
+        "",
+        8,
+        1.0,
+        "euler",
+        "simple",
+        261032,
+        "fixed",
+        1.0,
+        4,
+        "16:9",
+        496,
+        "auto",
+        8,
+        8,
+        "layout",
+        "object",
+        false,
+        0,
+        0
+      ],
+      "title": "③ MOSS生成・指示は自動入力",
+      "widgets_values_named": {
+        "positive": "",
+        "negative": "",
+        "steps": 8,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "seed": 261032,
+        "control_after_generate": "fixed",
+        "denoise": 1.0,
+        "panels": 4,
+        "panel_aspect": "16:9",
+        "panel_edge": 496,
+        "canvas_aspect": "auto",
+        "gutter": 8,
+        "margin": 8,
+        "init": "layout",
+        "label": "object",
+        "reborder": false,
+        "border_px": 0,
+        "shave": 0
+      }
+    },
+    {
+      "id": 106,
+      "type": "SaveImage",
+      "pos": [
+        1550,
+        400
+      ],
+      "size": [
+        500,
+        620
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 9
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "moss_h3_single_prompt/romance_montage/storyboard"
+      ],
+      "title": "ストーリーボード保存",
+      "widgets_values_named": {
+        "filename_prefix": "moss_h3_single_prompt/romance_montage/storyboard"
+      }
+    },
+    {
+      "id": 107,
+      "type": "MossStoryboardLayout",
+      "pos": [
+        450,
+        0
+      ],
+      "size": [
+        470,
+        620
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "panels",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "panels"
+          }
+        },
+        {
+          "name": "panel_aspect",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "panel_aspect"
+          }
+        },
+        {
+          "name": "panel_edge",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "panel_edge"
+          }
+        },
+        {
+          "name": "canvas_aspect",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "canvas_aspect"
+          }
+        },
+        {
+          "name": "columns",
+          "type": "INT",
+          "link": 2,
+          "widget": {
+            "name": "columns"
+          }
+        },
+        {
+          "name": "rows",
+          "type": "INT",
+          "link": 3,
+          "widget": {
+            "name": "rows"
+          }
+        },
+        {
+          "name": "gutter",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "gutter"
+          }
+        },
+        {
+          "name": "margin",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "margin"
+          }
+        },
+        {
+          "name": "cell_gray",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "cell_gray"
+          }
+        },
+        {
+          "name": "invert",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "invert"
+          }
+        },
+        {
+          "name": "label",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "label"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "columns",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "rows",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "spec",
+          "type": "STRING",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "layout_json",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "template",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "report",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MossStoryboardLayout"
+      },
+      "widgets_values": [
+        "",
+        4,
+        "1:1",
+        640,
+        "auto",
+        4,
+        1,
+        8,
+        8,
+        25,
+        false,
+        "object"
+      ],
+      "title": "コマ配置",
+      "widgets_values_named": {
+        "prompt": "",
+        "panels": 4,
+        "panel_aspect": "1:1",
+        "panel_edge": 640,
+        "canvas_aspect": "auto",
+        "columns": 4,
+        "rows": 1,
+        "gutter": 8,
+        "margin": 8,
+        "cell_gray": 25,
+        "invert": false,
+        "label": "object"
+      }
+    },
+    {
+      "id": 201,
+      "type": "UNETLoader",
+      "pos": [
+        2300,
+        130
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "重みdtype",
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "weight_dtype"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "モデル",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "title": "FastH3 OmniRefモデル",
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "fasth3_omniref_8step_pruned_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "fasth3_omniref_8step_pruned_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 202,
+      "type": "CLIPLoader",
+      "pos": [
+        2300,
+        342
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip名",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "タイプ",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "デバイス",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "title": "H3テキストエンコーダー",
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      }
+    },
+    {
+      "id": 203,
+      "type": "FastH3AccelPrefetch",
+      "pos": [
+        2749.13828125,
+        130
+      ],
+      "size": [
+        271.323828125,
+        46
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 10
+        },
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "モデル",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            20
+          ]
+        },
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "title": "DiT重みの先読み",
+      "properties": {
+        "Node name for S&R": "FastH3AccelPrefetch"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 204,
+      "type": "VAELoader",
+      "pos": [
+        2300,
+        578
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            14,
+            53
+          ]
+        }
+      ],
+      "title": "H3映像VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+      }
+    },
+    {
+      "id": 205,
+      "type": "VAELoader",
+      "pos": [
+        2300,
+        766
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            15,
+            51
+          ]
+        }
+      ],
+      "title": "H3音声VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+      }
+    },
+    {
+      "id": 207,
+      "type": "FastH3AccelSizes",
+      "pos": [
+        2300,
+        1186
+      ],
+      "size": [
+        349.13828125,
+        226
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "output_width",
+          "name": "output_width",
+          "type": "INT",
+          "widget": {
+            "name": "output_width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "output_height",
+          "name": "output_height",
+          "type": "INT",
+          "widget": {
+            "name": "output_height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "min_short_side",
+          "name": "min_short_side",
+          "type": "INT",
+          "widget": {
+            "name": "min_short_side"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "links": [
+            17,
+            41
+          ]
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "links": [
+            18,
+            42
+          ]
+        },
+        {
+          "localized_name": "low_width",
+          "name": "low_width",
+          "type": "INT",
+          "links": [
+            29
+          ]
+        },
+        {
+          "localized_name": "low_height",
+          "name": "low_height",
+          "type": "INT",
+          "links": [
+            30
+          ]
+        },
+        {
+          "localized_name": "esrgan_scale_by",
+          "name": "esrgan_scale_by",
+          "type": "FLOAT",
+          "links": [
+            56
+          ]
+        },
+        {
+          "localized_name": "crop_width",
+          "name": "crop_width",
+          "type": "INT",
+          "links": [
+            57
+          ]
+        },
+        {
+          "localized_name": "crop_height",
+          "name": "crop_height",
+          "type": "INT",
+          "links": [
+            58
+          ]
+        }
+      ],
+      "title": "動画の出力サイズ",
+      "properties": {
+        "Node name for S&R": "FastH3AccelSizes"
+      },
+      "widgets_values": [
+        1024,
+        1792,
+        512
+      ],
+      "widgets_values_named": {
+        "output_width": 1024,
+        "output_height": 1792,
+        "min_short_side": 512
+      }
+    },
+    {
+      "id": 208,
+      "type": "FastH3AccelTEBF16",
+      "pos": [
+        3156.0236328125,
+        342
+      ],
+      "size": [
+        254.835546875,
+        26
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "title": "テキストエンコーダーをBF16で実行",
+      "properties": {
+        "Node name for S&R": "FastH3AccelTEBF16"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 209,
+      "type": "MiniMaxH3ReferenceToVideo",
+      "pos": [
+        3581.51640625,
+        342
+      ],
+      "size": [
+        620,
+        1150
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 13
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 14
+        },
+        {
+          "localized_name": "audio_vae",
+          "name": "audio_vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 15
+        },
+        {
+          "localized_name": "ref_image_0",
+          "name": "ref_images.ref_image_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 19
+        },
+        {
+          "localized_name": "ref_image_1",
+          "name": "ref_images.ref_image_1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "ref_video_0",
+          "name": "ref_videos.ref_video_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "ref_video_audio_0",
+          "name": "ref_video_audios.ref_video_audio_0",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "ref_audio_0",
+          "name": "ref_audios.ref_audio_0",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "localized_name": "プロンプト",
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 16
+        },
+        {
+          "localized_name": "幅",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 17
+        },
+        {
+          "localized_name": "高さ",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 18
+        },
+        {
+          "localized_name": "長さ",
+          "name": "length",
+          "type": "INT",
+          "widget": {
+            "name": "length"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "リファレンス画像サイズ",
+          "name": "ref_image_size",
+          "type": "COMBO",
+          "widget": {
+            "name": "ref_image_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "ポジティブ",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            28
+          ]
+        },
+        {
+          "localized_name": "潜在",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "title": "④ H3動画生成・指示は自動入力",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ReferenceToVideo"
+      },
+      "widgets_values": [
+        "",
+        1344,
+        768,
+        345,
+        "match"
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 1344,
+        "height": 768,
+        "length": 345,
+        "ref_image_size": "match"
+      }
+    },
+    {
+      "id": 210,
+      "type": "FastH3AccelChunkFFN",
+      "pos": [
+        3156.0236328125,
+        130
+      ],
+      "size": [
+        325.4927734375,
+        82
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 20
+        },
+        {
+          "localized_name": "chunks",
+          "name": "chunks",
+          "type": "INT",
+          "widget": {
+            "name": "chunks"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seq_threshold",
+          "name": "seq_threshold",
+          "type": "INT",
+          "widget": {
+            "name": "seq_threshold"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "モデル",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            21
+          ]
+        }
+      ],
+      "title": "FFNを分割",
+      "properties": {
+        "Node name for S&R": "FastH3AccelChunkFFN"
+      },
+      "widgets_values": [
+        8,
+        4096
+      ],
+      "widgets_values_named": {
+        "chunks": 8,
+        "seq_threshold": 4096
+      }
+    },
+    {
+      "id": 211,
+      "type": "MiniMaxH3SigmaShift",
+      "pos": [
+        3581.51640625,
+        130
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 21
+        },
+        {
+          "localized_name": "ビデオシフト",
+          "name": "shift_video",
+          "type": "FLOAT",
+          "widget": {
+            "name": "shift_video"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "オーディオシフト",
+          "name": "shift_audio",
+          "type": "FLOAT",
+          "widget": {
+            "name": "shift_audio"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "モデル",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "title": "映像・音声のシグマシフト",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3SigmaShift"
+      },
+      "widgets_values": [
+        12.0,
+        3.0
+      ],
+      "widgets_values_named": {
+        "shift_video": 12.0,
+        "shift_audio": 3.0
+      }
+    },
+    {
+      "id": 212,
+      "type": "ModelAttentionBackend",
+      "pos": [
+        4081.51640625,
+        130
+      ],
+      "size": [
+        309.9,
+        58
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 22
+        },
+        {
+          "localized_name": "attention",
+          "name": "attention",
+          "type": "COMBO",
+          "widget": {
+            "name": "attention"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            23
+          ]
+        }
+      ],
+      "title": "Attentionの計算方式",
+      "properties": {
+        "Node name for S&R": "ModelAttentionBackend"
+      },
+      "widgets_values": [
+        "comfy kitchen attention"
+      ],
+      "widgets_values_named": {
+        "attention": "comfy kitchen attention"
+      }
+    },
+    {
+      "id": 213,
+      "type": "BlockSparseAttention",
+      "pos": [
+        4491.41640625,
+        130
+      ],
+      "size": [
+        351.9,
+        250
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 23
+        },
+        {
+          "localized_name": "selection",
+          "name": "selection",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "selection"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "keep_percent",
+          "name": "selection.keep_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "selection.keep_percent"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "start_percent",
+          "name": "start_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "start_percent"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "end_percent",
+          "name": "end_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "end_percent"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "dense_blocks",
+          "name": "dense_blocks",
+          "type": "STRING",
+          "widget": {
+            "name": "dense_blocks"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "min_tokens",
+          "name": "min_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "min_tokens"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "extra_tokens",
+          "name": "extra_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "extra_tokens"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sink_conditioning",
+          "name": "sink_conditioning",
+          "type": "COMBO",
+          "widget": {
+            "name": "sink_conditioning"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "verbose",
+          "name": "verbose",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "verbose"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "title": "VSA設定",
+      "properties": {
+        "Node name for S&R": "BlockSparseAttention"
+      },
+      "widgets_values": [
+        "vsa",
+        10.0,
+        0.0,
+        1.0,
+        "",
+        12288,
+        256,
+        "exact_kv_and_rows",
+        false
+      ],
+      "widgets_values_named": {
+        "selection": "vsa",
+        "selection.keep_percent": 10.0,
+        "start_percent": 0.0,
+        "end_percent": 1.0,
+        "dense_blocks": "",
+        "min_tokens": 12288,
+        "extra_tokens": 256,
+        "sink_conditioning": "exact_kv_and_rows",
+        "verbose": false
+      }
+    },
+    {
+      "id": 214,
+      "type": "FastH3AccelProducerReuse",
+      "pos": [
+        4943.31640625,
+        130
+      ],
+      "size": [
+        347.4908203125,
+        58
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 24
+        },
+        {
+          "localized_name": "cache_mib",
+          "name": "cache_mib",
+          "type": "INT",
+          "widget": {
+            "name": "cache_mib"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "モデル",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            25,
+            27,
+            38
+          ]
+        }
+      ],
+      "title": "疎Attentionの計算を再利用",
+      "properties": {
+        "Node name for S&R": "FastH3AccelProducerReuse"
+      },
+      "widgets_values": [
+        1280
+      ],
+      "widgets_values_named": {
+        "cache_mib": 1280
+      }
+    },
+    {
+      "id": 215,
+      "type": "BasicScheduler",
+      "pos": [
+        5390.8072265625,
+        130
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "モデル",
+          "name": "model",
+          "type": "MODEL",
+          "link": 25
+        },
+        {
+          "localized_name": "スケジューラ",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ステップ",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ノイズ除去",
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "シグマ",
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            26
+          ]
+        }
+      ],
+      "title": "8stepのシグマ設定",
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        8,
+        1.0
+      ],
+      "widgets_values_named": {
+        "scheduler": "simple",
+        "steps": 8,
+        "denoise": 1.0
+      }
+    },
+    {
+      "id": 216,
+      "type": "SplitSigmas",
+      "pos": [
+        5760.8072265625,
+        130
+      ],
+      "size": [
+        270,
+        78
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "シグマ",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 26
+        },
+        {
+          "localized_name": "ステップ",
+          "name": "step",
+          "type": "INT",
+          "widget": {
+            "name": "step"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "高シグマ",
+          "name": "high_sigmas",
+          "type": "SIGMAS",
+          "links": [
+            34
+          ]
+        },
+        {
+          "localized_name": "低シグマ",
+          "name": "low_sigmas",
+          "type": "SIGMAS",
+          "links": [
+            40,
+            48
+          ]
+        }
+      ],
+      "title": "低解像度5stepと高解像度3stepへ分割",
+      "properties": {
+        "Node name for S&R": "SplitSigmas"
+      },
+      "widgets_values": [
+        5
+      ],
+      "widgets_values_named": {
+        "step": 5
+      }
+    },
+    {
+      "id": 217,
+      "type": "BasicGuider",
+      "pos": [
+        5390.8072265625,
+        366
+      ],
+      "size": [
+        201,
+        46
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "モデル",
+          "name": "model",
+          "type": "MODEL",
+          "link": 27
+        },
+        {
+          "localized_name": "コンディショニング",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "ガイダー",
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            32,
+            46
+          ]
+        }
+      ],
+      "title": "H3の条件付け",
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 218,
+      "type": "RandomNoise",
+      "pos": [
+        2300,
+        1542
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "ノイズシード",
+          "name": "noise_seed",
+          "type": "INT",
+          "widget": {
+            "name": "noise_seed"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "ノイズ",
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            31,
+            39
+          ]
+        }
+      ],
+      "title": "H3のノイズseed",
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        771204598,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 771204598,
+        "control_after_generate": "fixed"
+      }
+    },
+    {
+      "id": 219,
+      "type": "DisableNoise",
+      "pos": [
+        2300,
+        1754
+      ],
+      "size": [
+        165.9,
+        26
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "ノイズ",
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            45
+          ]
+        }
+      ],
+      "title": "追加ノイズなし",
+      "properties": {
+        "Node name for S&R": "DisableNoise"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 220,
+      "type": "KSamplerSelect",
+      "pos": [
+        2300,
+        1910
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "サンプラー名",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "サンプラー",
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            33,
+            47
+          ]
+        }
+      ],
+      "title": "サンプラー選択",
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "euler"
+      }
+    },
+    {
+      "id": 221,
+      "type": "EmptyMiniMaxH3LatentAV",
+      "pos": [
+        2749.13828125,
+        306
+      ],
+      "size": [
+        306.8853515625,
+        106
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "幅",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 29
+        },
+        {
+          "localized_name": "高さ",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 30
+        },
+        {
+          "localized_name": "長さ",
+          "name": "length",
+          "type": "INT",
+          "widget": {
+            "name": "length"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "潜在",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            35
+          ]
+        }
+      ],
+      "title": "低解像度の映像・音声潜在",
+      "properties": {
+        "Node name for S&R": "EmptyMiniMaxH3LatentAV"
+      },
+      "widgets_values": [
+        1344,
+        768,
+        345
+      ],
+      "widgets_values_named": {
+        "width": 1344,
+        "height": 768,
+        "length": 345
+      }
+    },
+    {
+      "id": 222,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        6130.8072265625,
+        130
+      ],
+      "size": [
+        221.9,
+        106
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "ノイズ",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 31
+        },
+        {
+          "localized_name": "ガイダー",
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 32
+        },
+        {
+          "localized_name": "サンプラー",
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 33
+        },
+        {
+          "localized_name": "シグマ",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 34
+        },
+        {
+          "localized_name": "潜在イメージ",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "出力",
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            36
+          ]
+        },
+        {
+          "localized_name": "ノイズ除去出力",
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": [
+            37
+          ]
+        }
+      ],
+      "title": "低解像度で5step生成",
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 223,
+      "type": "LTXVSeparateAVLatent",
+      "pos": [
+        6452.7072265625,
+        130
+      ],
+      "size": [
+        186.1640625,
+        46
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "av_latent",
+          "name": "av_latent",
+          "type": "LATENT",
+          "link": 36
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "ビデオlatent",
+          "name": "video_latent",
+          "type": "LATENT",
+          "links": []
+        },
+        {
+          "localized_name": "オーディオlatent",
+          "name": "audio_latent",
+          "type": "LATENT",
+          "links": [
+            44
+          ]
+        }
+      ],
+      "title": "映像と音声の潜在を分離",
+      "properties": {
+        "Node name for S&R": "LTXVSeparateAVLatent"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 224,
+      "type": "FastH3AccelLBHHandoff",
+      "pos": [
+        6452.7072265625,
+        306
+      ],
+      "size": [
+        353.8482421875,
+        166
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 37
+        },
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 38
+        },
+        {
+          "localized_name": "noise",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 39
+        },
+        {
+          "localized_name": "sigmas",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 40
+        },
+        {
+          "localized_name": "upscaler_name",
+          "name": "upscaler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "upscaler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 41
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 42
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "潜在",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            43
+          ]
+        }
+      ],
+      "title": "LBH拡大と生成の継続準備",
+      "properties": {
+        "Node name for S&R": "FastH3AccelLBHHandoff"
+      },
+      "widgets_values": [
+        "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+        512,
+        896
+      ],
+      "widgets_values_named": {
+        "upscaler_name": "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+        "width": 512,
+        "height": 896
+      }
+    },
+    {
+      "id": 225,
+      "type": "LTXVConcatAVLatent",
+      "pos": [
+        6906.55546875,
+        130
+      ],
+      "size": [
+        145.433203125,
+        46
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "video_latent",
+          "name": "video_latent",
+          "type": "LATENT",
+          "link": 43
+        },
+        {
+          "localized_name": "audio_latent",
+          "name": "audio_latent",
+          "type": "LATENT",
+          "link": 44
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "latent",
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            49
+          ]
+        }
+      ],
+      "title": "映像と音声の潜在を結合",
+      "properties": {
+        "Node name for S&R": "LTXVConcatAVLatent"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 226,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        7151.988671874999,
+        130
+      ],
+      "size": [
+        221.9,
+        106
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "ノイズ",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 45
+        },
+        {
+          "localized_name": "ガイダー",
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 46
+        },
+        {
+          "localized_name": "サンプラー",
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 47
+        },
+        {
+          "localized_name": "シグマ",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 48
+        },
+        {
+          "localized_name": "潜在イメージ",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 49
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "出力",
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            50,
+            52
+          ]
+        },
+        {
+          "localized_name": "ノイズ除去出力",
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "title": "高解像度で残り3step生成",
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 227,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        7473.888671874999,
+        130
+      ],
+      "size": [
+        153,
+        46
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "サンプル",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 50
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 51
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "オーディオ",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            54
+          ]
+        }
+      ],
+      "title": "音声を復号",
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values_named": {},
+      "widgets_values": []
+    },
+    {
+      "id": 228,
+      "type": "UpscaleModelLoader",
+      "pos": [
+        2300,
+        2098
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "モデル名",
+          "name": "model_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "model_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "アップスケールモデル",
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [
+            55
+          ]
+        }
+      ],
+      "title": "Real-ESRGANモデル",
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader"
+      },
+      "widgets_values": [
+        "realesr-animevideov3.pth"
+      ],
+      "widgets_values_named": {
+        "model_name": "realesr-animevideov3.pth"
+      }
+    },
+    {
+      "id": 229,
+      "type": "FastH3AccelStreamSave",
+      "pos": [
+        7726.888671874999,
+        130
+      ],
+      "size": [
+        417.11484375,
+        334
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 52
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 53
+        },
+        {
+          "localized_name": "upscale_model",
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
+          "link": 55
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 54
+        },
+        {
+          "localized_name": "scale_by",
+          "name": "scale_by",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale_by"
+          },
+          "link": 56
+        },
+        {
+          "localized_name": "method",
+          "name": "method",
+          "type": "COMBO",
+          "widget": {
+            "name": "method"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "batch_frames",
+          "name": "batch_frames",
+          "type": "INT",
+          "widget": {
+            "name": "batch_frames"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "fps",
+          "name": "fps",
+          "type": "FLOAT",
+          "widget": {
+            "name": "fps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "nvenc_gpu",
+          "name": "nvenc_gpu",
+          "type": "INT",
+          "widget": {
+            "name": "nvenc_gpu"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cq",
+          "name": "cq",
+          "type": "INT",
+          "widget": {
+            "name": "cq"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tile_overlap",
+          "name": "tile_overlap",
+          "type": "INT",
+          "widget": {
+            "name": "tile_overlap"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "crop_width",
+          "name": "crop_width",
+          "type": "INT",
+          "widget": {
+            "name": "crop_width"
+          },
+          "link": 57
+        },
+        {
+          "localized_name": "crop_height",
+          "name": "crop_height",
+          "type": "INT",
+          "widget": {
+            "name": "crop_height"
+          },
+          "link": 58
+        }
+      ],
+      "outputs": [],
+      "title": "③ 動画保存",
+      "properties": {
+        "Node name for S&R": "FastH3AccelStreamSave"
+      },
+      "widgets_values": [
+        0.5,
+        "bicubic",
+        4,
+        "moss_h3_single_prompt/romance_montage/video",
+        24.0,
+        0,
+        18,
+        32,
+        0,
+        0
+      ],
+      "widgets_values_named": {
+        "scale_by": 0.5,
+        "method": "bicubic",
+        "batch_frames": 4,
+        "filename_prefix": "moss_h3_single_prompt/romance_montage/video",
+        "fps": 24.0,
+        "nvenc_gpu": 0,
+        "cq": 18,
+        "tile_overlap": 32,
+        "crop_width": 0,
+        "crop_height": 0
+      }
+    },
+    {
+      "id": 301,
+      "type": "StoryboardPromptPlanner",
+      "pos": [
+        -1100,
+        0
+      ],
+      "size": [
+        620,
+        440
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 0,
+      "title": "① 作りたい動画をここに1つ入力",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 59
+        },
+        {
+          "name": "request",
+          "type": "STRING",
+          "widget": {
+            "name": "request"
+          },
+          "link": null
+        },
+        {
+          "name": "layout",
+          "type": "COMBO",
+          "widget": {
+            "name": "layout"
+          },
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MOSS用プロンプト",
+          "type": "STRING",
+          "links": [
+            7,
+            62
+          ]
+        },
+        {
+          "name": "H3用プロンプト",
+          "type": "STRING",
+          "links": [
+            16,
+            61
+          ]
+        },
+        {
+          "name": "共通台本",
+          "type": "STRING",
+          "links": [
+            60
+          ]
+        },
+        {
+          "name": "列数",
+          "type": "INT",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "行数",
+          "type": "INT",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardPromptPlanner"
+      },
+      "widgets_values": [
+        "黒髪お団子の成人女性と黒髪の成人男性の恋愛映画風アニメ。14秒、4カット。暖かなカフェでの初対面、雪の駅での別れ、雨の街での再会、夜景のテラスでの穏やかな時間へ場面を切り替える。女性は赤いコート。セリフとBGMは不要。",
+        "横一列4コマ",
+        261026
+      ],
+      "widgets_values_named": {
+        "request": "黒髪お団子の成人女性と黒髪の成人男性の恋愛映画風アニメ。14秒、4カット。暖かなカフェでの初対面、雪の駅での別れ、雨の街での再会、夜景のテラスでの穏やかな時間へ場面を切り替える。女性は赤いコート。セリフとBGMは不要。",
+        "layout": "横一列4コマ",
+        "seed": 261026
+      }
+    },
+    {
+      "id": 302,
+      "type": "PreviewAny",
+      "pos": [
+        -1100,
+        520
+      ],
+      "size": [
+        620,
+        540
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 1,
+      "title": "自動生成した共通台本・確認用",
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 60
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    },
+    {
+      "id": 304,
+      "type": "PreviewAny",
+      "pos": [
+        -1100,
+        1100
+      ],
+      "size": [
+        620,
+        500
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "保存用・生成されたH3プロンプト",
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 61
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    },
+    {
+      "id": 305,
+      "type": "PreviewAny",
+      "pos": [
+        -1100,
+        1700
+      ],
+      "size": [
+        620,
+        500
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "保存用・生成されたMOSSプロンプト",
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 62
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    }
+  ],
+  "links": [
+    [
+      1,
+      101,
+      0,
+      102,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      301,
+      3,
+      107,
+      5,
+      "INT"
+    ],
+    [
+      3,
+      301,
+      4,
+      107,
+      6,
+      "INT"
+    ],
+    [
+      4,
+      102,
+      0,
+      105,
+      0,
+      "MODEL"
+    ],
+    [
+      5,
+      103,
+      0,
+      105,
+      1,
+      "CLIP"
+    ],
+    [
+      6,
+      104,
+      0,
+      105,
+      2,
+      "VAE"
+    ],
+    [
+      7,
+      301,
+      0,
+      105,
+      3,
+      "STRING"
+    ],
+    [
+      8,
+      107,
+      4,
+      105,
+      11,
+      "STRING"
+    ],
+    [
+      9,
+      105,
+      0,
+      106,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      201,
+      0,
+      203,
+      0,
+      "MODEL"
+    ],
+    [
+      11,
+      202,
+      0,
+      203,
+      1,
+      "CLIP"
+    ],
+    [
+      12,
+      203,
+      1,
+      208,
+      0,
+      "CLIP"
+    ],
+    [
+      13,
+      208,
+      0,
+      209,
+      0,
+      "CLIP"
+    ],
+    [
+      14,
+      204,
+      0,
+      209,
+      1,
+      "VAE"
+    ],
+    [
+      15,
+      205,
+      0,
+      209,
+      2,
+      "VAE"
+    ],
+    [
+      16,
+      301,
+      1,
+      209,
+      8,
+      "STRING"
+    ],
+    [
+      17,
+      207,
+      0,
+      209,
+      9,
+      "INT"
+    ],
+    [
+      18,
+      207,
+      1,
+      209,
+      10,
+      "INT"
+    ],
+    [
+      19,
+      105,
+      0,
+      209,
+      3,
+      "IMAGE"
+    ],
+    [
+      20,
+      203,
+      0,
+      210,
+      0,
+      "MODEL"
+    ],
+    [
+      21,
+      210,
+      0,
+      211,
+      0,
+      "MODEL"
+    ],
+    [
+      22,
+      211,
+      0,
+      212,
+      0,
+      "MODEL"
+    ],
+    [
+      23,
+      212,
+      0,
+      213,
+      0,
+      "MODEL"
+    ],
+    [
+      24,
+      213,
+      0,
+      214,
+      0,
+      "MODEL"
+    ],
+    [
+      25,
+      214,
+      0,
+      215,
+      0,
+      "MODEL"
+    ],
+    [
+      26,
+      215,
+      0,
+      216,
+      0,
+      "SIGMAS"
+    ],
+    [
+      27,
+      214,
+      0,
+      217,
+      0,
+      "MODEL"
+    ],
+    [
+      28,
+      209,
+      0,
+      217,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      29,
+      207,
+      2,
+      221,
+      0,
+      "INT"
+    ],
+    [
+      30,
+      207,
+      3,
+      221,
+      1,
+      "INT"
+    ],
+    [
+      31,
+      218,
+      0,
+      222,
+      0,
+      "NOISE"
+    ],
+    [
+      32,
+      217,
+      0,
+      222,
+      1,
+      "GUIDER"
+    ],
+    [
+      33,
+      220,
+      0,
+      222,
+      2,
+      "SAMPLER"
+    ],
+    [
+      34,
+      216,
+      0,
+      222,
+      3,
+      "SIGMAS"
+    ],
+    [
+      35,
+      221,
+      0,
+      222,
+      4,
+      "LATENT"
+    ],
+    [
+      36,
+      222,
+      0,
+      223,
+      0,
+      "LATENT"
+    ],
+    [
+      37,
+      222,
+      1,
+      224,
+      0,
+      "LATENT"
+    ],
+    [
+      38,
+      214,
+      0,
+      224,
+      1,
+      "MODEL"
+    ],
+    [
+      39,
+      218,
+      0,
+      224,
+      2,
+      "NOISE"
+    ],
+    [
+      40,
+      216,
+      1,
+      224,
+      3,
+      "SIGMAS"
+    ],
+    [
+      41,
+      207,
+      0,
+      224,
+      5,
+      "INT"
+    ],
+    [
+      42,
+      207,
+      1,
+      224,
+      6,
+      "INT"
+    ],
+    [
+      43,
+      224,
+      0,
+      225,
+      0,
+      "LATENT"
+    ],
+    [
+      44,
+      223,
+      1,
+      225,
+      1,
+      "LATENT"
+    ],
+    [
+      45,
+      219,
+      0,
+      226,
+      0,
+      "NOISE"
+    ],
+    [
+      46,
+      217,
+      0,
+      226,
+      1,
+      "GUIDER"
+    ],
+    [
+      47,
+      220,
+      0,
+      226,
+      2,
+      "SAMPLER"
+    ],
+    [
+      48,
+      216,
+      1,
+      226,
+      3,
+      "SIGMAS"
+    ],
+    [
+      49,
+      225,
+      0,
+      226,
+      4,
+      "LATENT"
+    ],
+    [
+      50,
+      226,
+      0,
+      227,
+      0,
+      "LATENT"
+    ],
+    [
+      51,
+      205,
+      0,
+      227,
+      1,
+      "VAE"
+    ],
+    [
+      52,
+      226,
+      0,
+      229,
+      0,
+      "LATENT"
+    ],
+    [
+      53,
+      204,
+      0,
+      229,
+      1,
+      "VAE"
+    ],
+    [
+      54,
+      227,
+      0,
+      229,
+      3,
+      "AUDIO"
+    ],
+    [
+      55,
+      228,
+      0,
+      229,
+      2,
+      "UPSCALE_MODEL"
+    ],
+    [
+      56,
+      207,
+      4,
+      229,
+      4,
+      "FLOAT"
+    ],
+    [
+      57,
+      207,
+      5,
+      229,
+      12,
+      "INT"
+    ],
+    [
+      58,
+      207,
+      6,
+      229,
+      13,
+      "INT"
+    ],
+    [
+      59,
+      103,
+      0,
+      301,
+      0,
+      "CLIP"
+    ],
+    [
+      60,
+      301,
+      2,
+      302,
+      0,
+      "STRING"
+    ],
+    [
+      61,
+      301,
+      1,
+      304,
+      0,
+      "STRING"
+    ],
+    [
+      62,
+      301,
+      0,
+      305,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        1200,
+        160
+      ]
+    }
+  },
+  "version": 0.4
+}

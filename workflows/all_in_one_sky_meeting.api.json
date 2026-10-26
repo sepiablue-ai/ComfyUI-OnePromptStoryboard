@@ -1,0 +1,605 @@
+{
+  "101": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "moss_image_sft_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "102": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "model": [
+        "101",
+        0
+      ],
+      "lora_name": "moss_image_sft_8step_dmd.safetensors",
+      "strength_model": 1.0
+    }
+  },
+  "103": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3.5_9b_int8_convrot.safetensors",
+      "type": "moss_image",
+      "device": "default"
+    }
+  },
+  "104": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "flux2-vae.safetensors"
+    }
+  },
+  "107": {
+    "class_type": "MossStoryboardLayout",
+    "inputs": {
+      "prompt": "",
+      "panels": 4,
+      "panel_aspect": "1:1",
+      "panel_edge": 640,
+      "canvas_aspect": "auto",
+      "columns": [
+        "301",
+        3
+      ],
+      "rows": [
+        "301",
+        4
+      ],
+      "gutter": 8,
+      "margin": 8,
+      "cell_gray": 25,
+      "invert": false,
+      "label": "object"
+    }
+  },
+  "105": {
+    "class_type": "MossStoryboardSampler",
+    "inputs": {
+      "model": [
+        "102",
+        0
+      ],
+      "clip": [
+        "103",
+        0
+      ],
+      "vae": [
+        "104",
+        0
+      ],
+      "positive": [
+        "301",
+        0
+      ],
+      "negative": "",
+      "steps": 8,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "seed": 261031,
+      "denoise": 1.0,
+      "spec": [
+        "107",
+        4
+      ],
+      "init": "layout",
+      "label": "object",
+      "reborder": false,
+      "border_px": 0,
+      "shave": 0
+    }
+  },
+  "106": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "105",
+        0
+      ],
+      "filename_prefix": "moss_h3_single_prompt/sky_meeting/storyboard"
+    }
+  },
+  "201": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "fasth3_omniref_8step_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "Load FastH3 OmniRef"
+    }
+  },
+  "202": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    },
+    "_meta": {
+      "title": "Load text encoder (nvfp4)"
+    }
+  },
+  "203": {
+    "class_type": "FastH3AccelPrefetch",
+    "inputs": {
+      "model": [
+        "201",
+        0
+      ],
+      "clip": [
+        "202",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Prefetch DiT weights"
+    }
+  },
+  "204": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader"
+    }
+  },
+  "205": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader"
+    }
+  },
+  "207": {
+    "class_type": "FastH3AccelSizes",
+    "inputs": {
+      "output_width": 1024,
+      "output_height": 1792,
+      "min_short_side": 512
+    },
+    "_meta": {
+      "title": "Output size"
+    }
+  },
+  "208": {
+    "class_type": "FastH3AccelTEBF16",
+    "inputs": {
+      "clip": [
+        "203",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "FastH3AccelTEBF16"
+    }
+  },
+  "209": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "208",
+        0
+      ],
+      "vae": [
+        "204",
+        0
+      ],
+      "audio_vae": [
+        "205",
+        0
+      ],
+      "prompt": [
+        "301",
+        1
+      ],
+      "width": [
+        "207",
+        0
+      ],
+      "height": [
+        "207",
+        1
+      ],
+      "length": 345,
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "105",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Reference to Video (prompt)"
+    }
+  },
+  "210": {
+    "class_type": "FastH3AccelChunkFFN",
+    "inputs": {
+      "model": [
+        "203",
+        0
+      ],
+      "chunks": 8,
+      "seq_threshold": 4096
+    },
+    "_meta": {
+      "title": "FastH3AccelChunkFFN"
+    }
+  },
+  "211": {
+    "class_type": "MiniMaxH3SigmaShift",
+    "inputs": {
+      "model": [
+        "210",
+        0
+      ],
+      "shift_video": 12.0,
+      "shift_audio": 3.0
+    },
+    "_meta": {
+      "title": "MiniMaxH3SigmaShift"
+    }
+  },
+  "212": {
+    "class_type": "ModelAttentionBackend",
+    "inputs": {
+      "model": [
+        "211",
+        0
+      ],
+      "attention": "comfy kitchen attention"
+    },
+    "_meta": {
+      "title": "ModelAttentionBackend"
+    }
+  },
+  "213": {
+    "class_type": "BlockSparseAttention",
+    "inputs": {
+      "model": [
+        "212",
+        0
+      ],
+      "selection": "vsa",
+      "selection.keep_percent": 10.0,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "dense_blocks": "",
+      "min_tokens": 12288,
+      "extra_tokens": 256,
+      "sink_conditioning": "exact_kv_and_rows",
+      "verbose": false
+    },
+    "_meta": {
+      "title": "BlockSparseAttention"
+    }
+  },
+  "214": {
+    "class_type": "FastH3AccelProducerReuse",
+    "inputs": {
+      "model": [
+        "213",
+        0
+      ],
+      "cache_mib": 1280
+    },
+    "_meta": {
+      "title": "FastH3AccelProducerReuse"
+    }
+  },
+  "215": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "214",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 8,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "BasicScheduler"
+    }
+  },
+  "216": {
+    "class_type": "SplitSigmas",
+    "inputs": {
+      "sigmas": [
+        "215",
+        0
+      ],
+      "step": 5
+    },
+    "_meta": {
+      "title": "SplitSigmas"
+    }
+  },
+  "217": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "214",
+        0
+      ],
+      "conditioning": [
+        "209",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "BasicGuider"
+    }
+  },
+  "218": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 771204598
+    },
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "219": {
+    "class_type": "DisableNoise",
+    "inputs": {},
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "220": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "221": {
+    "class_type": "EmptyMiniMaxH3LatentAV",
+    "inputs": {
+      "width": [
+        "207",
+        2
+      ],
+      "height": [
+        "207",
+        3
+      ],
+      "length": 345
+    },
+    "_meta": {
+      "title": "EmptyMiniMaxH3LatentAV"
+    }
+  },
+  "222": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "218",
+        0
+      ],
+      "guider": [
+        "217",
+        0
+      ],
+      "sampler": [
+        "220",
+        0
+      ],
+      "sigmas": [
+        "216",
+        0
+      ],
+      "latent_image": [
+        "221",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sampler low-res (5 steps)"
+    }
+  },
+  "223": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "222",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "LTXVSeparateAVLatent"
+    }
+  },
+  "224": {
+    "class_type": "FastH3AccelLBHHandoff",
+    "inputs": {
+      "samples": [
+        "222",
+        1
+      ],
+      "model": [
+        "214",
+        0
+      ],
+      "noise": [
+        "218",
+        0
+      ],
+      "sigmas": [
+        "216",
+        1
+      ],
+      "upscaler_name": "minimax_h3_latent_upscaler_3d_fp16.safetensors",
+      "width": [
+        "207",
+        0
+      ],
+      "height": [
+        "207",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "LBH upscale + continue"
+    }
+  },
+  "225": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "224",
+        0
+      ],
+      "audio_latent": [
+        "223",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "LTXVConcatAVLatent"
+    }
+  },
+  "226": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "219",
+        0
+      ],
+      "guider": [
+        "217",
+        0
+      ],
+      "sampler": [
+        "220",
+        0
+      ],
+      "sigmas": [
+        "216",
+        1
+      ],
+      "latent_image": [
+        "225",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sampler high-res (3 steps)"
+    }
+  },
+  "227": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "226",
+        0
+      ],
+      "vae": [
+        "205",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "VAEDecodeAudio"
+    }
+  },
+  "228": {
+    "class_type": "UpscaleModelLoader",
+    "inputs": {
+      "model_name": "realesr-animevideov3.pth"
+    },
+    "_meta": {
+      "title": "UpscaleModelLoader"
+    }
+  },
+  "229": {
+    "class_type": "FastH3AccelStreamSave",
+    "inputs": {
+      "samples": [
+        "226",
+        0
+      ],
+      "vae": [
+        "204",
+        0
+      ],
+      "audio": [
+        "227",
+        0
+      ],
+      "upscale_model": [
+        "228",
+        0
+      ],
+      "scale_by": [
+        "207",
+        4
+      ],
+      "method": "bicubic",
+      "batch_frames": 4,
+      "filename_prefix": "moss_h3_single_prompt/sky_meeting/video",
+      "fps": 24.0,
+      "nvenc_gpu": 0,
+      "cq": 18,
+      "tile_overlap": 32,
+      "crop_width": [
+        "207",
+        5
+      ],
+      "crop_height": [
+        "207",
+        6
+      ]
+    },
+    "_meta": {
+      "title": "Decode + ESRGAN + Save"
+    }
+  },
+  "301": {
+    "class_type": "StoryboardPromptPlanner",
+    "inputs": {
+      "clip": [
+        "103",
+        0
+      ],
+      "request": "黒髪お団子の成人女子大生と黒髪の成人男性が出会う、空と光が印象的なボーイミーツガール。14秒、4カット。雨の駅、晴れた海辺、夕暮れの踏切、星空の丘へ毎回違う場面に切り替える。服装と人物は一貫させる。セリフとBGMは不要。",
+      "layout": "縦一列4コマ",
+      "seed": 261026
+    }
+  },
+  "302": {
+    "class_type": "PreviewAny",
+    "inputs": {
+      "source": [
+        "301",
+        2
+      ]
+    }
+  },
+  "304": {
+    "class_type": "PreviewAny",
+    "inputs": {
+      "source": [
+        "301",
+        1
+      ]
+    }
+  },
+  "305": {
+    "class_type": "PreviewAny",
+    "inputs": {
+      "source": [
+        "301",
+        0
+      ]
+    }
+  }
+}
