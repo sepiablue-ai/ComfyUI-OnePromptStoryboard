@@ -12,7 +12,7 @@ ComfyUIの `custom_nodes` フォルダーで実行し、ComfyUIを再起動し�
 git clone https://github.com/sepiablue-ai/ComfyUI-OnePromptStoryboard.git
 ```
 
-非公開repoのため、招待済みGitHubアカウントの認証が必要です。ZIPを展開して `custom_nodes/ComfyUI-OnePromptStoryboard` に置く方法でも導入できます。ノード登録自体に追加のpip依存はありません。
+ZIPを展開して `custom_nodes/ComfyUI-OnePromptStoryboard` に置く方法でも導入できます。ノード登録自体に追加のpip依存はありません。
 
 ## ノード
 
