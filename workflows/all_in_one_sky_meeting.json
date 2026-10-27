@@ -3357,7 +3357,73 @@
       "STRING"
     ]
   ],
-  "groups": [],
+  "groups": [
+    {
+      "id": 1,
+      "title": "① 依頼文1つから共通台本を作成",
+      "bounding": [
+        -1140,
+        -70,
+        730,
+        2610
+      ],
+      "color": "#497f5d",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "② MOSSストーリーボード生成",
+      "bounding": [
+        -40,
+        -70,
+        2130,
+        1130
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "③ H3モデル・出力設定",
+      "bounding": [
+        2260,
+        60,
+        430,
+        2136
+      ],
+      "color": "#8a6d3b",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "④ H3動画生成",
+      "bounding": [
+        2709,
+        60,
+        4705,
+        452
+      ],
+      "color": "#745aa6",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "⑤ 動画保存",
+      "bounding": [
+        7433,
+        60,
+        751,
+        444
+      ],
+      "color": "#3c8b7b",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
   "config": {},
   "extra": {
     "ds": {
