@@ -1,6 +1,6 @@
-# Gemma4・システムプロンプト編集の開発版
+# 台本モデル・システムプロンプト・追加LoRAの設定
 
-開発ブランチ：`dev/gemma4-planner`。mainへはまだ統合していません。
+通常例はQwen共用・追加LoRA全OFFです。Gemma4は任意の別サンプルとして用意しています。
 
 ## 接続とモデル選択
 
@@ -25,7 +25,7 @@ Gemma4は [Comfy-Org/gemma-4](https://huggingface.co/Comfy-Org/gemma-4/tree/main
 
 ## 検証範囲
 
-単体テスト13件が成功しています。指定CLIPと編集したシステムプロンプトが `TextGenerate` に渡ること、JSON形式指定が残ること、旧APIの省略時に従来の指示が維持されること、GemmaとMOSSの配線が独立していることを確認しました。
+単体テスト16件が成功しています。指定CLIPと編集したシステムプロンプトが `TextGenerate` に渡ること、JSON形式指定が残ること、旧APIの省略時に従来の指示が維持されること、GemmaとMOSSの配線が独立していることを確認しました。
 
 ### GPU0・RTX 4070での実機結果
 
