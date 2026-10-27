@@ -1,5 +1,7 @@
 from .planning import DEFAULT_SYSTEM_PROMPT, build_system_prompt, parse_plan, compile_plan
 
+WEB_DIRECTORY = './web'
+
 class StoryboardPromptPlanner:
     @classmethod
     def INPUT_TYPES(cls):
