@@ -72,9 +72,45 @@ class NodeTests(unittest.TestCase):
             graph = json.loads(path.read_text(encoding='utf-8'))
             self.assertEqual(graph['209']['inputs']['ref_images.ref_image_0'], ['105', 0])
             self.assertEqual(graph['209']['inputs']['prompt'], ['301', 1])
-            self.assertEqual(graph['105']['inputs']['positive'], ['301', 0])
+            self.assertEqual(graph['105']['inputs']['positive'], ['309', 1])
+            self.assertEqual(graph['105']['inputs']['model'], ['309', 0])
+            for nid, previous in [('307', '102'), ('308', '307'), ('309', '308')]:
+                self.assertEqual(graph[nid]['inputs']['model'], [previous, 0])
+                self.assertFalse(graph[nid]['inputs']['enabled'])
+                self.assertEqual(graph[nid]['inputs']['lora_name'], nodes.StoryboardOptionalLora.NONE)
+            self.assertEqual(graph['307']['inputs']['prompt'], ['301', 0])
             self.assertFalse(graph['105']['inputs']['reborder'])
             self.assertNotIn('SepiaBlue', str(graph))
+
+    def test_disabled_optional_lora_does_not_load_or_add_trigger(self):
+        model = object()
+        result = nodes.StoryboardOptionalLora().apply(model, 'original', False, 'missing.safetensors', 1, 'trigger')
+        self.assertIs(result[0], model)
+        self.assertEqual(result[1], 'original')
+
+    def test_multiple_loras_and_triggers_are_chained(self):
+        calls = []
+        module = ModuleType('nodes')
+        class Loader:
+            def load_lora_model_only(self, model, name, strength):
+                calls.append((model, name, strength))
+                return (model + '/' + name,)
+        module.LoraLoaderModelOnly = Loader
+        with patch.dict(sys.modules, {'nodes': module}):
+            block = nodes.StoryboardOptionalLora()
+            model, prompt = block.apply('base', 'original', True, 'character.safetensors', 0.7, 'character_trigger')
+            model, prompt = block.apply(model, prompt, True, 'style.safetensors', 0.8, 'style_trigger')
+        self.assertEqual(model, 'base/character.safetensors/style.safetensors')
+        self.assertEqual(len(calls), 2)
+        self.assertIn('character_trigger', prompt)
+        self.assertIn('style_trigger', prompt)
+        self.assertTrue(prompt.endswith('original'))
+
+    def test_trigger_only_without_lora_file(self):
+        model = object()
+        result = nodes.StoryboardOptionalLora().apply(model, 'original', True, trigger_words='  trigger  ')
+        self.assertIs(result[0], model)
+        self.assertEqual(result[1], 'trigger\noriginal')
 
     def test_all_graph_edges_resolve(self):
         for path in (ROOT / 'workflows').glob('*.api.json'):

@@ -71,3 +71,40 @@ NODE_DISPLAY_NAME_MAPPINGS.update({
     'StoryboardPromptText': 'H3プロンプトを編集',
     'StoryboardPlanCompile': '保存済み共通台本から指示を復元',
 })
+
+
+class StoryboardOptionalLora:
+    NONE = '（選択なし）'
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        import folder_paths
+        return {'required': {
+            'model': ('MODEL',),
+            'prompt': ('STRING', {'forceInput': True}),
+            'enabled': ('BOOLEAN', {'default': False}),
+            'lora_name': ([cls.NONE] + folder_paths.get_filename_list('loras'),),
+            'strength_model': ('FLOAT', {'default': 1.0, 'min': -100.0, 'max': 100.0, 'step': 0.05}),
+            'trigger_words': ('STRING', {'default': '', 'multiline': True}),
+        }}
+
+    RETURN_TYPES = ('MODEL', 'STRING')
+    RETURN_NAMES = ('MOSSモデル', 'MOSS用プロンプト')
+    FUNCTION = 'apply'
+    CATEGORY = 'ストーリーボード'
+    DESCRIPTION = '初期OFFの任意LoRAとトリガーワード。MODELとSTRINGの両方を直列につなぎ、複製して追加できます。MOSS用LoRAを選択してください。'
+
+    def apply(self, model, prompt, enabled=False, lora_name=NONE, strength_model=1.0, trigger_words=''):
+        if not enabled:
+            return (model, prompt)
+        if lora_name != self.NONE and strength_model != 0:
+            from nodes import LoraLoaderModelOnly
+            model = LoraLoaderModelOnly().load_lora_model_only(model, lora_name, strength_model)[0]
+        words = trigger_words.strip()
+        if words:
+            prompt = words + '\n' + prompt
+        return (model, prompt)
+
+
+NODE_CLASS_MAPPINGS['StoryboardOptionalLora'] = StoryboardOptionalLora
+NODE_DISPLAY_NAME_MAPPINGS['StoryboardOptionalLora'] = '任意LoRA＋トリガーワード（初期OFF）'

@@ -58,7 +58,7 @@
     "class_type": "MossStoryboardSampler",
     "inputs": {
       "model": [
-        "102",
+        "309",
         0
       ],
       "clip": [
@@ -70,8 +70,8 @@
         0
       ],
       "positive": [
-        "301",
-        0
+        "309",
+        1
       ],
       "negative": "",
       "steps": 8,
@@ -601,6 +601,57 @@
         "301",
         0
       ]
+    }
+  },
+  "307": {
+    "class_type": "StoryboardOptionalLora",
+    "inputs": {
+      "model": [
+        "102",
+        0
+      ],
+      "prompt": [
+        "301",
+        0
+      ],
+      "enabled": false,
+      "lora_name": "（選択なし）",
+      "strength_model": 1.0,
+      "trigger_words": ""
+    }
+  },
+  "308": {
+    "class_type": "StoryboardOptionalLora",
+    "inputs": {
+      "model": [
+        "307",
+        0
+      ],
+      "prompt": [
+        "307",
+        1
+      ],
+      "enabled": false,
+      "lora_name": "（選択なし）",
+      "strength_model": 1.0,
+      "trigger_words": ""
+    }
+  },
+  "309": {
+    "class_type": "StoryboardOptionalLora",
+    "inputs": {
+      "model": [
+        "308",
+        0
+      ],
+      "prompt": [
+        "308",
+        1
+      ],
+      "enabled": false,
+      "lora_name": "（選択なし）",
+      "strength_model": 1.0,
+      "trigger_words": ""
     }
   }
 }

@@ -1,8 +1,8 @@
 {
   "id": "9467f516-a17d-4537-9560-a3120d67c090",
   "revision": 0,
-  "last_node_id": 305,
-  "last_link_id": 62,
+  "last_node_id": 309,
+  "last_link_id": 68,
   "nodes": [
     {
       "id": 101,
@@ -100,7 +100,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            4
+            63
           ]
         }
       ],
@@ -2702,8 +2702,8 @@
           "name": "MOSS用プロンプト",
           "type": "STRING",
           "links": [
-            7,
-            62
+            62,
+            64
           ]
         },
         {
@@ -2857,6 +2857,183 @@
       },
       "widgets_values": [],
       "widgets_values_named": {}
+    },
+    {
+      "id": 307,
+      "type": "StoryboardOptionalLora",
+      "title": "任意LoRA①・キャラなど（初期OFF）",
+      "pos": [
+        0,
+        1190
+      ],
+      "size": [
+        600,
+        350
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 63
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 64
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MOSSモデル",
+          "type": "MODEL",
+          "links": [
+            65
+          ]
+        },
+        {
+          "name": "MOSS用プロンプト",
+          "type": "STRING",
+          "links": [
+            66
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardOptionalLora"
+      },
+      "widgets_values": [
+        false,
+        "（選択なし）",
+        1.0,
+        ""
+      ],
+      "widgets_values_named": {
+        "enabled": false,
+        "lora_name": "（選択なし）",
+        "strength_model": 1.0,
+        "trigger_words": ""
+      }
+    },
+    {
+      "id": 308,
+      "type": "StoryboardOptionalLora",
+      "title": "任意LoRA②・画風など（初期OFF）",
+      "pos": [
+        700,
+        1190
+      ],
+      "size": [
+        600,
+        350
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 65
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 66
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MOSSモデル",
+          "type": "MODEL",
+          "links": [
+            67
+          ]
+        },
+        {
+          "name": "MOSS用プロンプト",
+          "type": "STRING",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardOptionalLora"
+      },
+      "widgets_values": [
+        false,
+        "（選択なし）",
+        1.0,
+        ""
+      ],
+      "widgets_values_named": {
+        "enabled": false,
+        "lora_name": "（選択なし）",
+        "strength_model": 1.0,
+        "trigger_words": ""
+      }
+    },
+    {
+      "id": 309,
+      "type": "StoryboardOptionalLora",
+      "title": "任意LoRA③・追加用（初期OFF）",
+      "pos": [
+        1400,
+        1190
+      ],
+      "size": [
+        600,
+        350
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 67
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 68
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MOSSモデル",
+          "type": "MODEL",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "MOSS用プロンプト",
+          "type": "STRING",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardOptionalLora"
+      },
+      "widgets_values": [
+        false,
+        "（選択なし）",
+        1.0,
+        ""
+      ],
+      "widgets_values_named": {
+        "enabled": false,
+        "lora_name": "（選択なし）",
+        "strength_model": 1.0,
+        "trigger_words": ""
+      }
     }
   ],
   "links": [
@@ -2886,7 +3063,7 @@
     ],
     [
       4,
-      102,
+      309,
       0,
       105,
       0,
@@ -2910,8 +3087,8 @@
     ],
     [
       7,
-      301,
-      0,
+      309,
+      1,
       105,
       3,
       "STRING"
@@ -3355,6 +3532,54 @@
       305,
       0,
       "STRING"
+    ],
+    [
+      63,
+      102,
+      0,
+      307,
+      0,
+      "MODEL"
+    ],
+    [
+      64,
+      301,
+      0,
+      307,
+      1,
+      "STRING"
+    ],
+    [
+      65,
+      307,
+      0,
+      308,
+      0,
+      "MODEL"
+    ],
+    [
+      66,
+      307,
+      1,
+      308,
+      1,
+      "STRING"
+    ],
+    [
+      67,
+      308,
+      0,
+      309,
+      0,
+      "MODEL"
+    ],
+    [
+      68,
+      308,
+      1,
+      309,
+      1,
+      "STRING"
     ]
   ],
   "groups": [
@@ -3420,6 +3645,19 @@
         444
       ],
       "color": "#3c8b7b",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "任意：MOSS用LoRA・トリガーワード（初期OFF／複製して追加）",
+      "bounding": [
+        -40,
+        1110,
+        2080,
+        480
+      ],
+      "color": "#8b7148",
       "font_size": 24,
       "flags": {}
     }
